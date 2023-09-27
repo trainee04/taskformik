@@ -8,6 +8,7 @@ function EmployeeForm({ setIsOpen }: any) {
   const initialValues = {
     firstname: "",
     lastname: "",
+
     birth_day: "",
     mobile_number: "",
     address: {
@@ -32,8 +33,10 @@ function EmployeeForm({ setIsOpen }: any) {
     official_email: Yup.string()
       .email("Invalid email format")
       .required("Required"),
+
     firstname: Yup.string().min(1).max(50).required("Required"),
     lastname: Yup.string().min(1).max(50),
+
     mobile_number: Yup.number()
       .typeError("That doesn't look like a phone number")
       .positive("A phone number can't start with a minus")
@@ -60,9 +63,9 @@ function EmployeeForm({ setIsOpen }: any) {
       .integer("A phone number can't include a decimal point")
       .min(10, "Phone must be at 10 characters long"),
     personal_email: Yup.string().email("Invalid email format"),
-    joining_date: Yup.date().max(
-      new Date(newDate.getTime() - 1 * 24 * 3600000)
-    ),
+    joining_date: Yup.date()
+      .max(new Date(newDate.getTime() - 1 * 24 * 3600000))
+      .required("Required"),
     birth_day: Yup.date().max(
       new Date(Date.now() - 567648000000),
       "You must be at least 18 years"
@@ -84,7 +87,7 @@ function EmployeeForm({ setIsOpen }: any) {
       personal_email: values.personal_email,
       official_email: values.official_email,
     };
-    console.log("sampleData >", sampleData);
+    console.log("sampleData >", values);
 
     const axiosConfig: any = {
       header: {
@@ -105,11 +108,89 @@ function EmployeeForm({ setIsOpen }: any) {
     } finally {
       onSubmitProps.resetForm();
     }
-    // setIsOpen(alert("data is submitted"));
   };
 
-  //   const hello = new Date(newDate.getTime()-(1*24*3600000))
-  //   console.log("hello", hello, "newDate", newDate);
+  const arr = [
+    {
+      key: "firstname",
+      label: "First Name",
+      type: "text",
+      placeholder: "First Name",
+    },
+    {
+      key: "lastname",
+      label: "Last Name",
+      type: "text",
+      placeholder: "Last Name",
+    },
+    {
+      key: "birth_day",
+      label: "Date Of Birth",
+      type: "date",
+      placeholder: "Date of birth",
+    },
+    {
+      key: "mobile_number",
+      label: "Mobile Number",
+      type: "text",
+      placeholder: "Mobile Number",
+    },
+    {
+      key: "address.line1",
+      label: "Address",
+      type: "text",
+      placeholder: "line1",
+    },
+    { key: "address.line2", label: "", type: "text", placeholder: "line2" },
+    { key: "address.city", label: "", type: "text", placeholder: "city" },
+    { key: "address.state", label: "", type: "text", placeholder: "state" },
+    { key: "address.zip", label: "", type: "text", placeholder: "zip" },
+    { key: "address.country", label: "", type: "text", placeholder: "country" },
+
+    {
+      key: "father_name",
+      label: "Father Name",
+      type: "text",
+      placeholder: "Father Name",
+    },
+    {
+      key: "mother_name",
+      label: "Mother Name",
+      type: "text",
+      placeholder: "Mother Name",
+    },
+    {
+      key: "alternate_number",
+      label: "Alternate Number",
+      type: "text",
+      placeholder: "Alternate Number",
+    },
+    {
+      key: "employee_id",
+      label: "Employee id",
+      type: "text",
+      placeholder: "employee id",
+    },
+    {
+      key: "joining_date",
+      label: "Date of Joining",
+      type: "date",
+      placeholder: "Date of Joining",
+    },
+    {
+      key: "official_email",
+      label: "Official Email",
+      type: "email",
+      placeholder: "official email",
+    },
+
+    {
+      key: "personal_email",
+      label: "Personal Email",
+      type: "email",
+      placeholder: "personal email",
+    },
+  ];
 
   return (
     <div className="p-5">
@@ -125,231 +206,23 @@ function EmployeeForm({ setIsOpen }: any) {
               <h1 className="font-bold text-center text-2xl py-1">
                 EMPLOYEE FORM
               </h1>
-              <div>
-                <label>First Name</label>
-                <Field
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type="text"
-                  placeholder="firstname"
-                  name="firstname"
-                />
-                <ErrorMessage
-                  name="firstname"
-                  component="div"
-                  className="text-red-900"
-                />
-              </div>
-              <div>
-                <label>Last Name</label>
-                <Field
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type="text"
-                  placeholder="lastname"
-                  name="lastname"
-                />
-                <ErrorMessage
-                  name="lastname"
-                  component="div"
-                  className="text-red-900"
-                />
-              </div>
-              <div>
-                <label>Mobile Number</label>
-                <Field
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type="text"
-                  placeholder="Mobile Number"
-                  name="mobile_number"
-                />
 
-                <ErrorMessage
-                  name="mobile_number"
-                  component="div"
-                  className="text-red-900"
-                />
-              </div>
-              <div>
-                <label>address</label>
-
-                <Field
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type="text"
-                  placeholder="line1"
-                  name="address.line1"
-                />
-                <ErrorMessage
-                  name="address.line1"
-                  component="div"
-                  className="text-red-900"
-                />
-                <Field
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type="text"
-                  placeholder="line2"
-                  name="address.line2"
-                />
-                <ErrorMessage
-                  name="address.line2"
-                  component="div"
-                  className="text-red-900"
-                />
-                <Field
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type="text"
-                  placeholder="country"
-                  name="address.country"
-                />
-                <ErrorMessage
-                  name="address.country"
-                  component="div"
-                  className="text-red-900"
-                />
-                <Field
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type="text"
-                  placeholder="state"
-                  name="address.state"
-                />
-                <ErrorMessage
-                  name="address.state"
-                  component="div"
-                  className="text-red-900"
-                />
-                <Field
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type="text"
-                  placeholder="city"
-                  name="address.city"
-                />
-                <ErrorMessage
-                  name="address.city"
-                  component="div"
-                  className="text-red-900"
-                />
-                <Field
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type="text"
-                  placeholder="zip"
-                  name="address.zip"
-                />
-                <ErrorMessage
-                  name="address.zip"
-                  component="div"
-                  className="text-red-900"
-                />
-              </div>
-              <div>
-                <label>Father's Name</label>
-                <Field
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type="text"
-                  placeholder="Father's Name"
-                  name="father_name"
-                />
-                <ErrorMessage
-                  name="father_name"
-                  component="div"
-                  className="text-red-900"
-                />
-              </div>
-              <div>
-                <label>Mother's Namee</label>
-                <Field
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type="text"
-                  placeholder="Mother's Name"
-                  name="mother_name"
-                />
-                <ErrorMessage
-                  name="mother_name"
-                  component="div"
-                  className="text-red-900"
-                />
-              </div>
-              <div>
-                <label>Alternative Number</label>
-                <Field
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type="text"
-                  placeholder="Alternate Number"
-                  name="alternate_number"
-                />
-                <ErrorMessage
-                  name="alternate_number"
-                  component="div"
-                  className="text-red-900"
-                />
-              </div>
-              <div>
-                <label>joining_date</label>
-                <Field
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type="date"
-                  placeholder="Date Of Joining"
-                  name="joining_date"
-                />
-                <ErrorMessage
-                  name="joining_date"
-                  component="div"
-                  className="text-red-900"
-                />
-              </div>
-              <div>
-                <label>Official Email</label>
-                <Field
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type="email"
-                  placeholder=" Official Email"
-                  name="official_email"
-                />
-                <ErrorMessage
-                  name="official_email"
-                  component="div"
-                  className="text-red-900"
-                />
-              </div>
-              <div>
-                <label>Personal Email</label>
-                <Field
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type="email"
-                  placeholder=" Official Email"
-                  name="personal_email"
-                />
-                <ErrorMessage
-                  name="personal_email"
-                  component="div"
-                  className="text-red-900"
-                />
-              </div>
-              <div>
-                <label>D.O.B</label>
-                <Field
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type="date"
-                  placeholder="D.O.B"
-                  name="birth_day"
-                />
-                <ErrorMessage
-                  name="birth_day"
-                  component="div"
-                  className="text-red-900"
-                />
-              </div>
-              <div>
-                <label>Employee Code</label>
-                <Field
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type="text"
-                  placeholder="Employee Code"
-                  name="employee_id"
-                />
-                <ErrorMessage
-                  name="employee_id"
-                  component="div"
-                  className="text-red-900"
-                />
-              </div>
+              {arr.map((value: any) => (
+                <div>
+                  <h1>{value.label}</h1>
+                  <Field
+                    name={value.key}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    type={value.type}
+                    placeholder={value.placeholder}
+                  />
+                  <ErrorMessage
+                    name={value.key}
+                    component="div"
+                    className="text-red-900"
+                  />
+                </div>
+              ))}
               <div className="py-5">
                 <button
                   type="submit"
