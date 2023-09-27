@@ -2,114 +2,110 @@
 
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import Axios from 'axios';
-import { error } from "console";
+import Axios from "axios";
 
 function EmployeeForm({ setIsOpen }: any) {
- 
-  const initialValues = {  
-    FirstName: "",
-    LastName: "",
-    mobNo: "",
-    Address: {
-      Line1:'',
-      Line2:'',
-      country:'',
-      state:'',
-      city:'',
-      zipcode:''
+  const initialValues = {
+    firstname: "",
+    lastname: "",
+    birth_day: "",
+    mobile_number: "",
+    address: {
+      line1: "",
+      line2: "",
+      country: "",
+      state: "",
+      city: "",
+      zip: "",
     },
-    FatherName: "",
-    MotherName: "",
-    AltNum: "",
-    PersonalEmail: "",
-    OfficialEmail: "",
-    DateOfJoining: "",
-    DOB: "",
-    EmployeeCode: "",
+    father_name: "",
+    mother_name: "",
+    alternate_number: "",
+    employee_id: "",
+    joining_date: "",
+    official_email: "",
+    personal_email: "",
   };
-  
+
   const newDate = new Date();
   const validationSchema = Yup.object({
-    OfficialEmail: Yup.string()
+    official_email: Yup.string()
       .email("Invalid email format")
       .required("Required"),
-    FirstName: Yup.string().min(2).max(50).required("Required"),
-    LastName: Yup.string().min(2).max(50),
-    mobNo: Yup.number()
+    firstname: Yup.string().min(1).max(50).required("Required"),
+    lastname: Yup.string().min(1).max(50),
+    mobile_number: Yup.number()
       .typeError("That doesn't look like a phone number")
       .positive("A phone number can't start with a minus")
       .integer("A phone number can't include a decimal point")
       .min(10, "Phone must be at 10 characters long")
       .required("A phone number is required"),
-    EmployeeCode: Yup.string().min(2).max(50).required("Required"),
-    Address: Yup.object({
-      Line1: Yup.string().min(2).max(50).required('Required'),
-      Line2:Yup.string().max(50),
-      country:Yup.string().min(2).max(50).required('Required'),
-      state:Yup.string().min(2).max(50).required('Required'),
-      city:Yup.string().min(2).max(50).required('Required'),
-      zipcode:Yup.number()
-      .typeError("That doesn't look like a zip code")
-      .positive("A zip code can't start with a minus")
-      .integer("A zip code can't include a decimal point")
-      .min(10, "zip code must be at 10 characters long"),
-    }) ,
-    FatherName: Yup.string().min(2).max(50),
-    MotherName: Yup.string().min(2).max(50),
-    AltNum: Yup.number()
+    employee_id: Yup.string().min(2).max(50).required("Required"),
+    address: Yup.object({
+      line1: Yup.string().min(2).max(50).required("Required"),
+      line2: Yup.string().max(50),
+      country: Yup.string().min(2).max(50).required("Required"),
+      state: Yup.string().min(2).max(50).required("Required"),
+      city: Yup.string().min(2).max(50).required("Required"),
+      zip: Yup.number()
+        .typeError("That doesn't look like a zip code")
+        .positive("A zip code can't start with a minus")
+        .integer("A zip code can't include a decimal point"),
+    }),
+    father_name: Yup.string().min(1).max(50),
+    mother_name: Yup.string().min(1).max(50),
+    alternate_number: Yup.number()
       .typeError("That doesn't look like a phone number")
       .positive("A phone number can't start with a minus")
       .integer("A phone number can't include a decimal point")
       .min(10, "Phone must be at 10 characters long"),
-    PersonalEmail: Yup.string().email("Invalid email format"),
-    DateOfJoining: Yup.date().max(
+    personal_email: Yup.string().email("Invalid email format"),
+    joining_date: Yup.date().max(
       new Date(newDate.getTime() - 1 * 24 * 3600000)
     ),
-    DOB: Yup.date().max(
+    birth_day: Yup.date().max(
       new Date(Date.now() - 567648000000),
       "You must be at least 18 years"
     ),
   });
 
- 
   const onSubmit = async (values: any, onSubmitProps: any) => {
-    const data = {
-      records: [
-        {
-          fields: {
-            FirstName: values.FirstName,
-            LastName: values.LastName,
-            mobNo: values.mobNo,
-            Address: values.Address,
-            FatherName: values.FatherName,
-            MotherName: values.MotherName,
-            AltNum: values.AltNum,
-            PersonalEmail: values.PersonalEmail,
-            OfficialEmail: values.OfficialEmail,
-            DateOfJoining: values.DateOfJoining,
-            DOB: values.DOB,
-            EmployeeCode: values.EmployeeCode,
-          },
-        },
-      ],
+    const sampleData = {
+      firstname: values.firstname,
+      lastname: values.lastname,
+      birth_day: values.birth_day,
+      mobile_number: values.mobile_number,
+      address: values.address,
+      father_name: values.father_name,
+      mother_name: values.mother_name,
+      alternate_number: values.alternate_number,
+      employee_id: values.employee_id,
+      joining_date: values.joining_date,
+      personal_email: values.personal_email,
+      official_email: values.official_email,
     };
-    const axiosConfig:any = {
+    console.log("sampleData >", sampleData);
+
+    const axiosConfig: any = {
       header: {
         "Content-Type": "application/json",
       },
     };
-    await Axios.post("http://192.168.1.63:3332/new", data, axiosConfig)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
+    try {
+      const data = await Axios.post(
+        "http://192.168.1.63:3332/new",
+        sampleData,
+        axiosConfig
+      );
+      console.log("resp >", data);
+      return data;
+    } catch (e: any) {
+      console.log("e >", e?.message);
+      throw new Error(e?.message);
+    } finally {
+      onSubmitProps.resetForm();
+    }
     // setIsOpen(alert("data is submitted"));
-
-    onSubmitProps.resetForm();
   };
 
   //   const hello = new Date(newDate.getTime()-(1*24*3600000))
@@ -121,22 +117,24 @@ function EmployeeForm({ setIsOpen }: any) {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
-       enableReinitialize
+        enableReinitialize
       >
         {(formik) => {
           return (
             <Form>
-                <h1 className="font-bold text-center text-2xl py-1">EMPLOYEE FORM</h1>
-              <div >
+              <h1 className="font-bold text-center text-2xl py-1">
+                EMPLOYEE FORM
+              </h1>
+              <div>
                 <label>First Name</label>
                 <Field
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   type="text"
-                  placeholder="FirstName"
-                  name="FirstName"
+                  placeholder="firstname"
+                  name="firstname"
                 />
                 <ErrorMessage
-                  name="FirstName"
+                  name="firstname"
                   component="div"
                   className="text-red-900"
                 />
@@ -146,11 +144,11 @@ function EmployeeForm({ setIsOpen }: any) {
                 <Field
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   type="text"
-                  placeholder="LastName"
-                  name="LastName"
+                  placeholder="lastname"
+                  name="lastname"
                 />
                 <ErrorMessage
-                  name="LastName"
+                  name="lastname"
                   component="div"
                   className="text-red-900"
                 />
@@ -161,81 +159,81 @@ function EmployeeForm({ setIsOpen }: any) {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   type="text"
                   placeholder="Mobile Number"
-                  name="mobNo"
+                  name="mobile_number"
                 />
 
                 <ErrorMessage
-                  name="mobNo"
+                  name="mobile_number"
                   component="div"
                   className="text-red-900"
                 />
               </div>
               <div>
-                <label>Address</label>
-                
+                <label>address</label>
+
                 <Field
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type='text'
-                  placeholder="Line1"
-                  name="Address.Line1"
+                  type="text"
+                  placeholder="line1"
+                  name="address.line1"
                 />
                 <ErrorMessage
-                  name="Address.Line1"
+                  name="address.line1"
                   component="div"
                   className="text-red-900"
                 />
                 <Field
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type='text'
-                  placeholder="Line2"
-                  name="Address.Line2"
+                  type="text"
+                  placeholder="line2"
+                  name="address.line2"
                 />
                 <ErrorMessage
-                  name="Address.Line2"
+                  name="address.line2"
                   component="div"
                   className="text-red-900"
                 />
                 <Field
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type='text'
+                  type="text"
                   placeholder="country"
-                  name="Address.country"
+                  name="address.country"
                 />
                 <ErrorMessage
-                  name="Address.country"
+                  name="address.country"
                   component="div"
                   className="text-red-900"
                 />
                 <Field
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type='text'
+                  type="text"
                   placeholder="state"
-                  name="Address.state"
+                  name="address.state"
                 />
                 <ErrorMessage
-                  name="Address.state"
+                  name="address.state"
                   component="div"
                   className="text-red-900"
                 />
                 <Field
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type='text'
+                  type="text"
                   placeholder="city"
-                  name="Address.city"
+                  name="address.city"
                 />
                 <ErrorMessage
-                  name="Address.city"
+                  name="address.city"
                   component="div"
                   className="text-red-900"
                 />
                 <Field
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  type='text'
-                  placeholder="zipcode"
-                  name="Address.zipcode"
+                  type="text"
+                  placeholder="zip"
+                  name="address.zip"
                 />
                 <ErrorMessage
-                  name="Address.zipcode"
+                  name="address.zip"
                   component="div"
                   className="text-red-900"
                 />
@@ -246,10 +244,10 @@ function EmployeeForm({ setIsOpen }: any) {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   type="text"
                   placeholder="Father's Name"
-                  name="FatherName"
+                  name="father_name"
                 />
                 <ErrorMessage
-                  name="FatherName"
+                  name="father_name"
                   component="div"
                   className="text-red-900"
                 />
@@ -260,10 +258,10 @@ function EmployeeForm({ setIsOpen }: any) {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   type="text"
                   placeholder="Mother's Name"
-                  name="MotherName"
+                  name="mother_name"
                 />
                 <ErrorMessage
-                  name="MotherName"
+                  name="mother_name"
                   component="div"
                   className="text-red-900"
                 />
@@ -274,24 +272,24 @@ function EmployeeForm({ setIsOpen }: any) {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   type="text"
                   placeholder="Alternate Number"
-                  name="AltNum"
+                  name="alternate_number"
                 />
                 <ErrorMessage
-                  name="AltNum"
+                  name="alternate_number"
                   component="div"
                   className="text-red-900"
                 />
               </div>
               <div>
-                <label>DateOfJoining</label>
+                <label>joining_date</label>
                 <Field
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   type="date"
                   placeholder="Date Of Joining"
-                  name="DateOfJoining"
+                  name="joining_date"
                 />
                 <ErrorMessage
-                  name="DateOfJoining"
+                  name="joining_date"
                   component="div"
                   className="text-red-900"
                 />
@@ -302,10 +300,10 @@ function EmployeeForm({ setIsOpen }: any) {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   type="email"
                   placeholder=" Official Email"
-                  name="OfficialEmail"
+                  name="official_email"
                 />
                 <ErrorMessage
-                  name="OfficialEmail"
+                  name="official_email"
                   component="div"
                   className="text-red-900"
                 />
@@ -316,10 +314,10 @@ function EmployeeForm({ setIsOpen }: any) {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   type="email"
                   placeholder=" Official Email"
-                  name="PersonalEmail"
+                  name="personal_email"
                 />
                 <ErrorMessage
-                  name="PersonalEmail"
+                  name="personal_email"
                   component="div"
                   className="text-red-900"
                 />
@@ -330,10 +328,10 @@ function EmployeeForm({ setIsOpen }: any) {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   type="date"
                   placeholder="D.O.B"
-                  name="DOB"
+                  name="birth_day"
                 />
                 <ErrorMessage
-                  name="DOB"
+                  name="birth_day"
                   component="div"
                   className="text-red-900"
                 />
@@ -344,10 +342,10 @@ function EmployeeForm({ setIsOpen }: any) {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   type="text"
                   placeholder="Employee Code"
-                  name="EmployeeCode"
+                  name="employee_id"
                 />
                 <ErrorMessage
-                  name="EmployeeCode"
+                  name="employee_id"
                   component="div"
                   className="text-red-900"
                 />
@@ -370,8 +368,6 @@ function EmployeeForm({ setIsOpen }: any) {
                   Close
                 </button>
               </div>
-              
-              
             </Form>
           );
         }}
@@ -381,5 +377,3 @@ function EmployeeForm({ setIsOpen }: any) {
 }
 
 export default EmployeeForm;
-
-
